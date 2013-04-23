@@ -7,6 +7,11 @@ class MainWindow(Gtk.Window):
         super(MainWindow, self).__init__()
 
        	self.menuBar = Gtk.MenuBar()
+       	self.toolBar = Gtk.Toolbar()
+       	self.pane1 = Gtk.Paned()
+       	self.pane2 = Gtk.Paned()
+       	self.statusBar = Gtk.Statusbar()
+       	self.preview = Gtk.Notebook()
 
        	# Window Options
        	self.set_title("Matter")
@@ -21,10 +26,18 @@ class MainWindow(Gtk.Window):
        	fileMenu.append(exitItem)
        	self.menuBar.append(fileMenuItem)
 
-        vbox = Gtk.VBox(False, 2)
+       	self.preview.append_page(Gtk.Label("Test"), Gtk.Label("Page 1"))
+       	self.pane2.pack1(Gtk.Label("Test"))
+       	self.pane2.pack2(self.preview)
+       	self.pane1.pack1(self.pane2)
+       	self.pane1.pack2(Gtk.Label("Test"))
+
+        vbox = Gtk.VBox(False, 4)
         vbox.pack_start(self.menuBar, False, False, 0)
+        vbox.pack_start(self.toolBar, False, False, 0)
+        vbox.pack_start(self.pane1, True, True, 0)
+        vbox.pack_start(self.statusBar, False, False, 0)
 
         self.add(vbox)
 
         self.connect("destroy", matter.quit)
-        # self.set_position(Gtk.WindowPosition.CENTER)
