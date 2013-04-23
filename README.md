@@ -1,4 +1,4 @@
-matter
+Matter
 ======
 
 Interface Designer for Clutter
