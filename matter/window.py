@@ -1,4 +1,5 @@
-from gi.repository import Gtk
+from gi.repository import Gtk, GtkClutter, Clutter
+from widgets import PropertiesEditor, OutlineView
 
 import matter
 
@@ -10,9 +11,13 @@ class MainWindow(Gtk.Window):
        	self.toolBar = Gtk.Toolbar()
        	self.pane1 = Gtk.Paned()
        	self.pane2 = Gtk.Paned()
+        self.pane3 = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
        	self.statusBar = Gtk.Statusbar()
+        self.propertiesEditor = PropertiesEditor()
+        self.outlineView = OutlineView()
        	self.preview = Gtk.Notebook()
-
+        self.tempStage = GtkClutter.Embed()
+        self.tempStage.get_stage().set_background_color(Clutter.Color.new(20, 20, 20, 255))
        	# Window Options
        	self.set_title("Matter")
         self.set_size_request(800, 600)
@@ -26,11 +31,13 @@ class MainWindow(Gtk.Window):
        	fileMenu.append(exitItem)
        	self.menuBar.append(fileMenuItem)
 
-       	self.preview.append_page(Gtk.Label("Test"), Gtk.Label("Page 1"))
-       	self.pane2.pack1(Gtk.Label("Test"))
+       	self.preview.append_page(self.tempStage, Gtk.Label("Page 1"))
+       	self.pane3.pack1(self.outlineView)
+        self.pane3.pack2(self.propertiesEditor)
+        self.pane2.pack1(Gtk.Label("Test"))
        	self.pane2.pack2(self.preview)
        	self.pane1.pack1(self.pane2)
-       	self.pane1.pack2(Gtk.Label("Test"))
+       	self.pane1.pack2(self.pane3)
 
         vbox = Gtk.VBox(False, 4)
         vbox.pack_start(self.menuBar, False, False, 0)
