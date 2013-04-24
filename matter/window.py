@@ -21,7 +21,10 @@ class MainWindow(Gtk.Window):
        	# Window Options
        	self.set_title("Matter")
         self.set_size_request(800, 600)
-
+        self.pane1.set_margin_top(5)
+        self.pane1.set_margin_bottom(5)
+        self.pane1.set_margin_left(5)
+        self.pane1.set_margin_right(5)
        	# Menu Options
        	fileMenuItem = Gtk.MenuItem("File")
        	fileMenu     = Gtk.Menu()

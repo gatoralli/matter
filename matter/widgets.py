@@ -3,7 +3,7 @@ from gi.repository import Gtk
 class PropertiesEditor(Gtk.Frame):
     def __init__(self):
         super(PropertiesEditor, self).__init__()
-
+        self.set_shadow_type(Gtk.ShadowType.NONE)
         self.set_label("Properties")
         # General tab with background color
         self.notebook = Gtk.Notebook()
@@ -13,12 +13,11 @@ class PropertiesEditor(Gtk.Frame):
 class OutlineView(Gtk.Frame):
     def __init__(self):
         super(OutlineView, self).__init__()
-
+        self.set_shadow_type(Gtk.ShadowType.NONE)
         self.set_label("Outline")
         
         scrolledWindow = Gtk.ScrolledWindow()
         scrolledWindow.set_shadow_type(Gtk.ShadowType.IN)
         self.treeView = Gtk.TreeView()
-        
         scrolledWindow.add(self.treeView)
         self.add(scrolledWindow)
