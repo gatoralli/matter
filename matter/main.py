@@ -1,11 +1,10 @@
 from gi.repository import Gtk, GtkClutter
-
-from window import MainWindow
+import matter
 
 if __name__ == "__main__":
     GtkClutter.init([])
 
-    mainWindow = MainWindow()
-    mainWindow.show_all()
+    application = matter.Application()
+    application.start()
 
     Gtk.main()

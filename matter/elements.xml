@@ -1,0 +1,52 @@
+<matter>
+  <element-palette>
+    <element-group label="Actors" expanded="True">
+      <tooltip>Actors</tooltip>
+      <element-items>
+        <element-item id="matter-actor" label="Actor" icon="icon-actor"/>
+        <element-item id="matter-actor-stage" label="Stage" icon="icon-actor-stage"/>
+        <element-item id="matter-actor-clone" label="Clone" icon="icon-actor-clone"/>
+        <element-item id="matter-actor-text" label="Text" icon="icon-actor-text"/>
+      </element-items>
+    </element-group>
+    <element-group label="Layouts" expanded="True">
+      <tooltip>Layouts</tooltip>
+      <element-items>
+        <element-item id="matter-layout" label="Layout" icon="icon-layout"/>
+        <element-item id="matter-layout-fixed" label="Fixed" icon="icon-layout-fixed"/>
+        <element-item id="matter-layout-bin" label="Bin" icon="icon-layout-bin"/>
+        <element-item id="matter-layout-flow" label="Flow" icon="icon-layout-flow"/>
+        <element-item id="matter-layout-box" label="Box" icon="icon-layout-box"/>
+        <element-item id="matter-layout-table" label="Table" icon="icon-layout-table"/>
+      </element-items>
+    </element-group>
+  </element-palette>
+  <elements>
+    <actors class="ActorElement">
+      <element id="matter-actor" class="Actor"/>
+      <element id="matter-actor-stage" class="Stage"/>
+      <element id="matter-actor-clone" class="Clone"/>
+      <element id="matter-actor-text" class="Text"/>
+    </actors>
+    <layouts class="LayoutElement">
+      <element id="matter-layout" class="LayoutManager"/>
+      <element id="matter-layout-fixed" class="FixedLayout"/>
+      <element id="matter-layout-bin" class="BinLayout"/>
+      <element id="matter-layout-flow" class="FlowLayout"/>
+      <element id="matter-layout-box" class="BoxLayout"/>
+      <element id="matter-layout-table" class="TableLayout"/>
+    </layouts>
+  </elements>
+  <icons>
+    <icon id="icon-actor" path="icons/actor.png"/>
+    <icon id="icon-actor-stage" path="icons/actor-stage.png"/>
+    <icon id="icon-actor-clone" path="icons/actor-clone.png"/>
+    <icon id="icon-actor-text" path="icons/actor-text.png"/>
+    <icon id="icon-layout" path="icons/layout.png"/>
+    <icon id="icon-layout-fixed" path="icons/layout-fixed.png"/>
+    <icon id="icon-layout-bin" path="icons/layout-bin.png"/>
+    <icon id="icon-layout-flow" path="icons/layout-flow.png"/>
+    <icon id="icon-layout-box" path="icons/layout-box.png"/>
+    <icon id="icon-layout-table" path="icons/layout-table.png"/>
+  </icons>
+</matter>
