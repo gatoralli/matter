@@ -26,40 +26,31 @@ class ElementPalette(Gtk.ToolPalette):
     def __init__(self):
         super(ElementPalette, self).__init__()
         self.elementItems = []
-        self.selectedItem = None
-        
-    def applyConfig(self, config):
-        palette = config.find("element-palette")
-        icons = config.find("icons")
-        elements = config.find("elements")
+        self.resetSelected()
 
-        for group in palette.findall("element-group"):
+    def loadCatalog(self, catalog):
+        for group in catalog.groups:
             paletteGroup = Gtk.ToolItemGroup()
-            paletteGroup.set_label(group.get("label"))
+            paletteGroup.set_label(group.label)
             self.add(paletteGroup)
 
-            for element in group.findall("*element-item"):
-                e = elements.find("*/*[@id='%s']" % element.get("id"))
-                print e.find(".//")
-                
+            for element in group.elements:
                 elementItem = Gtk.ToolItem()
 
                 icon = Gtk.Image()
-                icon.set_from_file(icons.find("icon[@id='%s']" % 
-                    element.get("icon")).get("path"))
-
+                icon.set_from_file(element.iconPath)
                 button = Gtk.ToggleButton()
-                button.set_image(icon)
                 button.set_relief(Gtk.ReliefStyle.NONE)
-                elementItem.add(button)
+                button.set_image(icon)
 
+                elementItem.add(button)
                 paletteGroup.add(elementItem)
                 self.elementItems.append(elementItem)
 
                 button.handler = button.connect("toggled", 
-                    self.elementItemToggled, elementItem)
+                    self.elementItemToggled, elementItem, element)
 
-    def elementItemToggled(self, button, elementItem):
+    def elementItemToggled(self, button, elementItem, element):
         for item in self.elementItems:
             if elementItem != item:
                 itemButton = item.get_child()
@@ -68,9 +59,17 @@ class ElementPalette(Gtk.ToolPalette):
                 itemButton.handler_unblock(itemButton.handler)
 
         if button.get_active():
-            self.selectedItem = item
+            self.selectedItem = elementItem
+            self.selectedElement = element
         else:
-            self.selectedItem = None
+            self.resetSelected()
+
+        print "Selected Item: ", self.selectedItem
+        print "Selected Element: ", self.selectedElement
+
+    def resetSelected(self):
+        self.selectedItem = None
+        self.selectedElement = None
 
 class ActorPreview(GtkClutter.Embed):
     def __init__(self):

@@ -8,8 +8,8 @@ def getConfig():
     return tree.getroot()
 
 class Element(object):
-    def __init__(self):
-        self.name = None
+    def getType(self):
+        return type(self.element)
 
 class ActorElement(Element):
     def __init__(self, actor):
