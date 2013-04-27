@@ -1,4 +1,4 @@
-from gi.repository import Gtk, GtkClutter, Clutter
+from gi.repository import Gtk, GtkClutter, Clutter, GObject
 
 class PropertiesEditor(Gtk.Frame):
     def __init__(self):
@@ -25,6 +25,10 @@ class OutlineView(Gtk.Frame):
 class ElementPalette(Gtk.ToolPalette):
     def __init__(self):
         super(ElementPalette, self).__init__()
+
+        GObject.signal_new("element-changed", ElementPalette, 
+            GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, GObject.TYPE_NONE, (GObject.TYPE_STRING, ))
+        
         self.elementItems = []
         self.resetSelected()
 
@@ -64,8 +68,7 @@ class ElementPalette(Gtk.ToolPalette):
         else:
             self.resetSelected()
 
-        print "Selected Item: ", self.selectedItem
-        print "Selected Element: ", self.selectedElement
+        self.emit("element-changed", self.selectedElement)
 
     def resetSelected(self):
         self.selectedItem = None
@@ -86,6 +89,8 @@ class ActorPreview(GtkClutter.Embed):
         self.dragState = False
         self.startPos = [0, 0]
 
+        self.element = None
+
     def mousePress(self, actor, event):
         self.dragState = True
         self.box = ActorPreviewBox()
@@ -103,6 +108,10 @@ class ActorPreview(GtkClutter.Embed):
         if self.dragState is True:
             self.box.set_size(event.x - self.startPos[0], 
                 event.y - self.startPos[1])
+
+    def setElement(self, element):
+        self.element = element
+        print element
 
 class ActorPreviewBox(Clutter.Actor):
     def __init__(self):

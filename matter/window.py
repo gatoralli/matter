@@ -15,6 +15,7 @@ class MainWindow(Gtk.Window):
         self.pane2 = Gtk.Paned()
         self.pane3 = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
         self.elementPalette = ElementPalette()
+        self.elementPalette.connect("element-changed", self.elementChanged)
         self.statusBar = Gtk.Statusbar()
         self.propertiesEditor = PropertiesEditor()
         self.outlineView = OutlineView()
@@ -28,6 +29,7 @@ class MainWindow(Gtk.Window):
         self.pane1.set_margin_bottom(5)
         self.pane1.set_margin_left(5)
         self.pane1.set_margin_right(5)
+
         # Menu Options
         fileMenuItem = Gtk.MenuItem("File")
         fileMenu     = Gtk.Menu()
@@ -57,3 +59,6 @@ class MainWindow(Gtk.Window):
         self.add(vbox)
 
         self.connect("destroy", self.application.quit)
+
+    def elementChanged(self, item, element):
+        self.embed.setElement(element)
