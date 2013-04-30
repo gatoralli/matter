@@ -11,23 +11,62 @@ class PropertiesEditor(Gtk.Frame):
         self.add(self.notebook)
 
 class OutlineView(Gtk.Frame):
-    def __init__(self):
+    def __init__(self, model):
         super(OutlineView, self).__init__()
         self.set_shadow_type(Gtk.ShadowType.NONE)
         self.set_label("Outline")
         
         scrolledWindow = Gtk.ScrolledWindow()
         scrolledWindow.set_shadow_type(Gtk.ShadowType.IN)
-        self.treeView = Gtk.TreeView()
+
+        self.treeView = Gtk.TreeView(model)
+
+
+        box = Gtk.CellAreaBox()
+        column = Gtk.TreeViewColumn.new_with_area(box)
+
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        box.set_spacing(2)
+
+        # Icon
+        iconRenderer = Gtk.CellRendererPixbuf()
+        iconRenderer.props.xpad = 2
+        box.pack_start(iconRenderer, False, True, False)
+        column.add_attribute(iconRenderer, "pixbuf", 2)
+
+        # Element Name
+        nameRenderer = Gtk.CellRendererText()
+        box.pack_start(nameRenderer, False, True, False)
+        column.add_attribute(nameRenderer, "text", 0)
+        
+        # Padding
+        paddingRenderer = Gtk.CellRendererText()
+        paddingRenderer.props.width = 8
+        box.pack_start(paddingRenderer, False, True, False)
+
+        # Class Name / Details
+        classNameRenderer = Gtk.CellRendererText()
+        box.pack_start(classNameRenderer, False, True, False)
+        column.add_attribute(classNameRenderer, "text", 1)
+        
+        self.treeView.append_column(column)
+        self.treeView.set_headers_visible(False)
+        # self.treeView.set_reorderable(True)
+        self.setModel(model)
+
         scrolledWindow.add(self.treeView)
         self.add(scrolledWindow)
+
+    def setModel(self, model):
+        self.treeView.set_model(model)
 
 class ElementPalette(Gtk.ToolPalette):
     def __init__(self):
         super(ElementPalette, self).__init__()
 
         GObject.signal_new("element-changed", ElementPalette, 
-            GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, GObject.TYPE_NONE, (GObject.TYPE_STRING, ))
+            GObject.SIGNAL_RUN_FIRST | GObject.SIGNAL_ACTION, 
+            GObject.TYPE_NONE, (GObject.TYPE_STRING,))
         
         self.elementItems = []
         self.resetSelected()
@@ -46,6 +85,7 @@ class ElementPalette(Gtk.ToolPalette):
                 button = Gtk.ToggleButton()
                 button.set_relief(Gtk.ReliefStyle.NONE)
                 button.set_image(icon)
+                button.set_tooltip_text(element.label)
 
                 elementItem.add(button)
                 paletteGroup.add(elementItem)
@@ -89,7 +129,7 @@ class ActorPreview(GtkClutter.Embed):
         self.dragState = False
         self.startPos = [0, 0]
 
-        self.element = None
+        self.elementClass = None
 
     def mousePress(self, actor, event):
         self.dragState = True
@@ -105,22 +145,23 @@ class ActorPreview(GtkClutter.Embed):
         self.startPos = [0, 0]
 
     def mouseMove(self, actor, event):
-        if self.dragState is True:
-            self.box.set_size(event.x - self.startPos[0], 
-                event.y - self.startPos[1])
-
-    def setElement(self, element):
-        self.element = element
-        print element
+        if self.elementClass:
+            # Brush Mode
+            if self.dragState is True:
+                self.box.set_size(event.x - self.startPos[0], 
+                    event.y - self.startPos[1])
+            element = self.stage.get_actor_at_pos(Clutter.PickMode.ALL, event.x, event.y)
+            print element.get_layout_manager()
+        else:
+            # Select Mode
+            pass
+    
+    def setElementClass(self, elementClass):
+        self.elementClass = elementClass
+        print elementClass
+        #print element
 
 class ActorPreviewBox(Clutter.Actor):
     def __init__(self):
         super(ActorPreviewBox, self).__init__()
-
         self.set_background_color(Clutter.Color.new(200, 200, 200, 255))
-
-        subactor = Clutter.Actor()
-        subactor.set_background_color(Clutter.Color.new(200, 0, 0, 200))
-        subactor.set_size(50, 50)
-
-        self.add_actor(subactor)

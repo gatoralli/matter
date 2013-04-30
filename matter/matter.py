@@ -8,6 +8,9 @@ class Application(object):
         # Load configuration
         self.elementCatalog = catalog.ElementCatalog("element-catalog.xml")
 
+        # Element graph
+        self.elementGraph = elements.ElementGraph()
+        
         # Initialize GUI
         self.window = MainWindow(self)
         self.window.elementPalette.loadCatalog(self.elementCatalog)

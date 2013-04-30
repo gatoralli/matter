@@ -18,7 +18,7 @@ class MainWindow(Gtk.Window):
         self.elementPalette.connect("element-changed", self.elementChanged)
         self.statusBar = Gtk.Statusbar()
         self.propertiesEditor = PropertiesEditor()
-        self.outlineView = OutlineView()
+        self.outlineView = OutlineView(self.application.elementGraph)
         self.preview = Gtk.Notebook()
         self.embed = ActorPreview()
         
@@ -61,4 +61,4 @@ class MainWindow(Gtk.Window):
         self.connect("destroy", self.application.quit)
 
     def elementChanged(self, item, element):
-        self.embed.setElement(element)
+        self.embed.setElementClass(element)
