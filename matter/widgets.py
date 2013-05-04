@@ -1,4 +1,5 @@
 from gi.repository import Gtk, GtkClutter, Clutter, GObject
+from pprint import pprint
 
 class PropertiesEditor(Gtk.Frame):
     def __init__(self):
@@ -119,8 +120,14 @@ class ActorPreview(GtkClutter.Embed):
         super(ActorPreview, self).__init__()
 
         self.stage = self.get_stage()
-        self.stage.set_background_color(Clutter.Color.new(20, 20, 20, 255))
 
+        #self.stage.do_apply_transform = lambda m: m
+        #pprint(dir(self.stage))
+        #self.stage.set_child_transform()
+        self.stage.set_rotation(Clutter.RotateAxis.X_AXIS, 20.0, 30.0, 20.0, 20.0)
+
+        self.stage.set_background_color(Clutter.Color.new(20, 20, 20, 255))
+        self.stage.set_position(100, 100)
         self.stage.connect("button-press-event", self.mousePress)
         self.stage.connect("button-release-event", self.mouseRelease)
         self.stage.connect("motion-event", self.mouseMove)
@@ -133,35 +140,70 @@ class ActorPreview(GtkClutter.Embed):
 
     def mousePress(self, actor, event):
         self.dragState = True
-        self.box = ActorPreviewBox()
-        self.startPos = event.x, event.y
-        self.box.set_position(event.x, event.y)
 
-        self.stage.add_actor(self.box)
+        if self.elementClass:
+            pass
+        else:
+            self.box = SelectionBox()
+            self.startPos = int(event.x), int(event.y)
+            self.box.set_position(event.x, event.y)
+            self.box.set_size(0, 0)
+            self.box.hide()
+            self.stage.add_actor(self.box)
 
     def mouseRelease(self, actor, event):
         self.box = None
         self.dragState = False
         self.startPos = [0, 0]
 
+        if self.elementClass:
+            pass
+
     def mouseMove(self, actor, event):
+        event.x = int(event.x)
+        event.y = int(event.y)
+        print event.x, event.y
         if self.elementClass:
             # Brush Mode
             if self.dragState is True:
                 self.box.set_size(event.x - self.startPos[0], 
                     event.y - self.startPos[1])
-            element = self.stage.get_actor_at_pos(Clutter.PickMode.ALL, event.x, event.y)
+            element = self.stage.get_actor_at_pos(Clutter.PickMode.ALL, 
+                event.x, event.y)
             print element.get_layout_manager()
         else:
             # Select Mode
-            pass
+            if self.dragState is True:
+                if event.x == self.startPos[0] or event.y == self.startPos[1]:
+                    self.box.hide()
+                else:
+                    self.box.show()
+
+                x_cond = event.x < self.startPos[0]
+                y_cond = event.y < self.startPos[1]
+
+                self.box.set_position(
+                    x_cond * event.x + (not x_cond) * self.startPos[0], 
+                    y_cond * event.y + (not y_cond) * self.startPos[1])
+                
+                self.box.set_size(abs(event.x - self.startPos[0]), 
+                    abs(event.y - self.startPos[1]))
     
     def setElementClass(self, elementClass):
         self.elementClass = elementClass
-        print elementClass
-        #print element
+        #print elementClass
 
-class ActorPreviewBox(Clutter.Actor):
+class SelectionBox(Clutter.Rectangle):
+    def do_apply_transform(self, matrix):
+        # print dir(matrix)
+        matrix.rotate(30.0, 30.0, 0, 0)
+        Clutter.Actor.do_apply_transform(self, matrix)
+        # return matrix
+
     def __init__(self):
-        super(ActorPreviewBox, self).__init__()
-        self.set_background_color(Clutter.Color.new(200, 200, 200, 255))
+        super(SelectionBox, self).__init__()
+        opacity = 0.25
+
+        self.set_color(Clutter.Color.new(100, 100, 100, opacity * 255))
+        self.set_border_color(Clutter.Color.new(255, 255, 255, opacity * 255))
+        self.set_border_width(1)
