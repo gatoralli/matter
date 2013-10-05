@@ -1,20 +1,10 @@
 <catalog>
   <element-groups>
-    <element-group class="ActorElement" label="Actors" expanded="True">
+    <element-group class="Element" label="Actors" expanded="True">
       <tooltip>Actors</tooltip>
       <element class="Actor" label="Actor" icon-id="icon-actor"/>
-      <element class="Stage" label="Stage" icon-id="icon-actor-stage"/>
       <element class="Clone" label="Clone" icon-id="icon-actor-clone"/>
       <element class="Text" label="Text" icon-id="icon-actor-text"/>
-    </element-group>
-    <element-group class="LayoutElement" label="Layouts" expanded="True">
-      <tooltip>Layouts</tooltip>
-      <element class="LayoutManager" label="Layout" icon-id="icon-layout"/>
-      <element class="FixedLayout" label="Fixed" icon-id="icon-layout-fixed"/>
-      <element class="BinLayout" label="Bin" icon-id="icon-layout-bin"/>
-      <element class="FlowLayout" label="Flow" icon-id="icon-layout-flow"/>
-      <element class="BoxLayout" label="Box" icon-id="icon-layout-box"/>
-      <element class="TableLayout" label="Table" icon-id="icon-layout-table"/>
     </element-group>
   </element-groups>
   <icons>

@@ -1,5 +1,5 @@
 from gi.repository import Gtk, GtkClutter, Clutter
-from widgets import PropertiesEditor, OutlineView, ElementPalette, ActorPreview
+from widgets import PropertiesEditor, OutlineView, ElementPalette, StageView
 
 import matter
 
@@ -14,13 +14,12 @@ class MainWindow(Gtk.Window):
         self.pane1 = Gtk.Paned()
         self.pane2 = Gtk.Paned()
         self.pane3 = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
-        self.elementPalette = ElementPalette()
-        self.elementPalette.connect("element-changed", self.elementChanged)
+        self.elementPalette = ElementPalette(self.elementChanged)
         self.statusBar = Gtk.Statusbar()
-        self.propertiesEditor = PropertiesEditor()
-        self.outlineView = OutlineView(self.application.elementGraph)
+        self.outlineView = OutlineView(self.application.stageModel)
         self.preview = Gtk.Notebook()
-        self.embed = ActorPreview()
+        self.stageView = StageView(self.application.stageModel)
+        self.propertiesEditor = PropertiesEditor(self.application.stageModel)
         
         # Window Options
         self.set_title("Matter")
@@ -32,23 +31,57 @@ class MainWindow(Gtk.Window):
 
         # Menu Options
         fileMenuItem = Gtk.MenuItem("File")
-        fileMenu     = Gtk.Menu()
-        exitItem     = Gtk.MenuItem("Exit")
-        exitItem.connect("activate", application.quit)
+        fileMenu = Gtk.Menu()
         fileMenuItem.set_submenu(fileMenu)
-        fileMenu.append(exitItem)
-        self.menuBar.append(fileMenuItem)
+
+        newItem = Gtk.MenuItem("New")
+        newItem.connect("activate", application.new)
+        fileMenu.add(newItem)
+
+        openItem = Gtk.MenuItem("Open")
+        openItem.connect("activate", application.open)
+        fileMenu.add(openItem)
+
+        saveItem = Gtk.MenuItem("Save")
+        saveItem.connect("activate", application.save)
+        fileMenu.add(saveItem)
+
+        saveAsItem = Gtk.MenuItem("Save As")
+        saveAsItem.connect("activate", application.saveAs)
+        fileMenu.add(saveAsItem)
+
+        exitItem = Gtk.MenuItem("Exit")
+        exitItem.connect("activate", application.quit)
+        fileMenu.add(exitItem)
+
+        self.menuBar.add(fileMenuItem)
+
+
+        helpMenuItem = Gtk.MenuItem("Help")
+        helpMenu     = Gtk.Menu()
+        helpMenuItem.set_submenu(helpMenu)
+
+        aboutItem    = Gtk.MenuItem("About")
+        aboutItem.connect("activate", application.quit)
+        helpMenu.add(aboutItem)
+
+        self.menuBar.add(helpMenuItem)
+
 
         fr = Gtk.Frame()
-        fr.add(self.embed)
-
+        fr.add(self.stageView)
         self.preview.append_page(fr, Gtk.Label("Test"))
+
         self.pane3.pack1(self.outlineView)
         self.pane3.pack2(self.propertiesEditor)
         self.pane2.pack1(self.elementPalette)
         self.pane2.pack2(self.preview)
         self.pane1.pack1(self.pane2)
         self.pane1.pack2(self.pane3)
+
+        self.pane1.set_position(600)
+        self.pane2.set_position(150)
+        self.pane3.set_position(200)
 
         vbox = Gtk.VBox(False, 4)
         vbox.pack_start(self.menuBar, False, False, 0)
@@ -60,5 +93,5 @@ class MainWindow(Gtk.Window):
 
         self.connect("destroy", self.application.quit)
 
-    def elementChanged(self, item, element):
-        self.embed.setElementClass(element)
+    def elementChanged(self, element):
+        self.stageView.setElementClass(element)
